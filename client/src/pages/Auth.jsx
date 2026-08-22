@@ -7,6 +7,7 @@ import {
 } from 'react-icons/fa';
 import { GiIsland } from 'react-icons/gi';
 import { Turnstile } from '@marsidev/react-turnstile';
+import { useGoogleLogin } from '@react-oauth/google';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
 import PrivacyPolicyModal from '../components/PrivacyPolicyModal';
@@ -253,16 +254,65 @@ const GoogleIcon = () => (
   </svg>
 );
 
-const GoogleButton = ({ text = 'Continue with Google' }) => {
-  const { signInWithGoogle } = useAuth();
+const GoogleButton = ({ text = 'Continue with Google', onSuccess }) => {
+  const { signInWithGoogle, signInWithGoogleIdToken } = useAuth();
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
-  const handleClick = async () => {
+  const handleIdTokenSuccess = async (idToken) => {
+    setLoading(true);
+    const { error } = await signInWithGoogleIdToken(idToken);
+    setLoading(false);
+    if (error) {
+      toast.error('Google Sign-In failed: ' + error);
+    } else {
+      toast.success('🙏 Welcome to Nicoman Tourism!');
+      if (onSuccess) onSuccess();
+      else navigate('/');
+    }
+  };
+
+  const handleStandardRedirect = async () => {
     setLoading(true);
     const { error } = await signInWithGoogle();
     if (error) {
       toast.error('Google Sign-In error: ' + error);
       setLoading(false);
+    }
+  };
+
+  const nativeGoogleLogin = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      setLoading(true);
+      try {
+        if (tokenResponse.id_token) {
+          await handleIdTokenSuccess(tokenResponse.id_token);
+        } else {
+          await handleStandardRedirect();
+        }
+      } catch (err) {
+        console.error('Google auth error:', err);
+        await handleStandardRedirect();
+      } finally {
+        setLoading(false);
+      }
+    },
+    onError: (err) => {
+      console.warn('Google popup error:', err);
+      handleStandardRedirect();
+    },
+  });
+
+  const handleClick = () => {
+    if (googleClientId) {
+      try {
+        nativeGoogleLogin();
+      } catch {
+        handleStandardRedirect();
+      }
+    } else {
+      handleStandardRedirect();
     }
   };
 
