@@ -1,0 +1,463 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    @apply text-black bg-white;
+    color-scheme: light;
+  }
+
+  html.dark {
+    @apply text-white bg-gray-900;
+    color-scheme: dark;
+  }
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: #1e293b;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #14b8a6, #0d9488);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #0d9488, #0f766e);
+}
+
+/* Custom Selection */
+::selection {
+  background: #14b8a6;
+  color: white;
+}
+
+/* Marquee Animation */
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 20s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+@layer components {
+
+  /* Primary Button */
+  .btn-primary {
+    @apply relative overflow-hidden bg-gradient-to-r from-teal-500 to-cyan-500 text-white px-8 py-4 rounded-xl font-bold text-lg transition-all duration-300 shadow-lg shadow-teal-500/30 hover:shadow-xl hover:shadow-teal-500/40 transform hover:-translate-y-1 hover:scale-105 active:scale-95;
+  }
+
+  .btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s;
+  }
+
+  .btn-primary:hover::before {
+    left: 100%;
+  }
+
+  /* Secondary Button */
+  .btn-secondary {
+    @apply bg-white dark:bg-gray-800 text-teal-600 dark:text-teal-400 px-8 py-4 rounded-xl font-bold text-lg border-2 border-teal-500 hover:bg-teal-50 dark:hover:bg-gray-700 transition-all duration-300 hover:shadow-lg transform hover:-translate-y-1;
+  }
+
+  /* Card */
+  .card {
+    @apply bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-500 overflow-hidden border border-gray-200/50 dark:border-gray-700/50;
+  }
+
+  .card:hover {
+    transform: translateY(-8px);
+  }
+
+  /* Map wrappers must NOT lift on hover — translateY breaks Leaflet's coordinate system */
+  .card-map {
+    @apply bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-2xl shadow-xl transition-all duration-500 border border-gray-200/50 dark:border-gray-700/50;
+  }
+
+  .card-map:hover {
+    transform: none;
+  }
+
+  /* Input Field */
+  .input-field {
+    @apply w-full px-4 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm text-gray-900 dark:text-white focus:border-teal-500 focus:ring-4 focus:ring-teal-500/20 outline-none transition-all duration-200 text-sm sm:text-base;
+  }
+
+  .input-field:focus {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 20px -5px rgba(20, 184, 166, 0.3);
+  }
+
+  /* Gradient Text */
+  .gradient-text {
+    @apply bg-gradient-to-r from-teal-500 via-cyan-500 to-blue-500 bg-clip-text text-transparent;
+  }
+
+  /* Glass Effect */
+  .glass {
+    @apply bg-white/10 backdrop-blur-xl border border-white/20 shadow-xl;
+  }
+
+  /* Glow Effect */
+  .glow {
+    box-shadow: 0 0 60px -15px rgba(20, 184, 166, 0.5);
+  }
+
+  /* Floating Animation */
+  .float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  @keyframes float {
+
+    0%,
+    100% {
+      transform: translateY(0px);
+    }
+
+    50% {
+      transform: translateY(-20px);
+    }
+  }
+
+  /* Pulse Glow */
+  .pulse-glow {
+    animation: pulseGlow 2s ease-in-out infinite;
+  }
+
+  @keyframes pulseGlow {
+
+    0%,
+    100% {
+      box-shadow: 0 0 20px rgba(20, 184, 166, 0.4);
+    }
+
+    50% {
+      box-shadow: 0 0 40px rgba(20, 184, 166, 0.8);
+    }
+  }
+
+  /* Shimmer Effect */
+  .shimmer {
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+
+    100% {
+      background-position: 200% 0;
+    }
+  }
+}
+
+/* Page Transitions */
+.page-enter {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.page-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: all 0.5s ease-out;
+}
+
+/* Leaflet Map Fix */
+.leaflet-container {
+  font-family: inherit;
+  z-index: 1;
+}
+
+/* ── Date picker calendar icon — adapt to colour scheme ────────────────────── */
+/* Light mode: dark icon (browser default) */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 0.7;
+  cursor: pointer;
+}
+
+/* Dark mode: invert to white so icon is visible on dark backgrounds */
+.dark input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1) brightness(1.4);
+  opacity: 0.85;
+  cursor: pointer;
+}
+
+/* ── Skeleton shimmer animation ────────────────────────────────────────────── */
+@keyframes shimmer {
+  0% {
+    background-position: -200% center;
+  }
+
+  100% {
+    background-position: 200% center;
+  }
+}
+
+.skeleton-shimmer {
+  background-size: 200% auto;
+  animation: shimmer 1.5s linear infinite;
+}
+
+/* Hide scrollbar but keep scroll functionality */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* ── Tourist Places — Satellite Map Pins ───────────────────────────────────── */
+
+/* Reset Leaflet's default icon styles so our custom divIcons look clean */
+.leaflet-div-icon {
+  background: transparent !important;
+  border: none !important;
+}
+
+.leaflet-container {
+  font-family: inherit;
+}
+
+/* Hide the tiny Leaflet attribution logo on mobile to save space */
+.leaflet-attribution-flag {
+  display: none !important;
+}
+
+/* Pin wrapper: 36×36 container centred on the lat/lng point */
+.map-pin {
+  position: relative;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+/* Core dot — runs entrance bounce once when the marker first appears */
+.pin-core {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2.5px solid rgba(255, 255, 255, 0.95);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+  position: relative;
+  z-index: 2;
+  transform: scale(0);
+  opacity: 0;
+  animation: pinEntrance 0.48s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  transition: width 0.2s ease, height 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Radar ring — hidden by default, activated via wrapper class */
+.pin-ring {
+  position: absolute;
+  inset: 2px;
+  border-radius: 50%;
+  border-width: 2px;
+  border-style: solid;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 1;
+  transform-origin: center;
+}
+
+/* ── activate pulse on the whole map wrapper ────────────────────── */
+#tourist-map-wrap.phase-pulsing .pin-ring {
+  animation: radarPulse 1.65s ease-out infinite;
+}
+
+/* Selected pin: larger core, no pulse (user is actively looking at it) */
+#tourist-map-wrap.phase-pulsing .pin-selected .pin-ring {
+  animation: none !important;
+  opacity: 0 !important;
+}
+
+.pin-selected .pin-core {
+  width: 18px;
+  height: 18px;
+  box-shadow: 0 3px 18px rgba(0, 0, 0, 0.45);
+  /* Don't replay entrance when icon is swapped for selected state */
+  animation: none;
+  transform: scale(1);
+  opacity: 1;
+}
+
+/* ── Keyframes ────────────────────────────────────────────────────────────── */
+@keyframes pinEntrance {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+
+  55% {
+    transform: scale(1.35);
+    opacity: 1;
+  }
+
+  78% {
+    transform: scale(0.90);
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes radarPulse {
+  0% {
+    transform: scale(0.55);
+    opacity: 0.88;
+  }
+
+  100% {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+}
+
+/* Breathing glow on core after phase-pulsing is active */
+#tourist-map-wrap.phase-pulsing .pin-core {
+  animation: pinEntrance 0.001s forwards, pinBreath 3s ease-in-out infinite 0.5s;
+}
+
+#tourist-map-wrap.phase-pulsing .pin-selected .pin-core {
+  animation: none !important;
+}
+
+@keyframes pinBreath {
+
+  0%,
+  100% {
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.30);
+  }
+
+  50% {
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.50);
+  }
+}
+
+/* ── Info popup speech-bubble tail ───────────────────────────────────────── */
+.popup-tail {
+  position: absolute;
+  bottom: -7px;
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+  width: 14px;
+  height: 14px;
+  background: inherit;
+  box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.08);
+}
+
+/* ── Date, Time & Calendar Picker Theme Adaptation ───────────────────────── */
+input[type="date"],
+input[type="datetime-local"],
+input[type="time"] {
+  color-scheme: light;
+}
+
+.dark input[type="date"],
+.dark input[type="datetime-local"],
+.dark input[type="time"],
+html.dark input[type="date"],
+html.dark input[type="datetime-local"],
+html.dark input[type="time"] {
+  color-scheme: dark !important;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="datetime-local"]::-webkit-calendar-picker-indicator,
+input[type="time"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 0.8;
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator:hover,
+input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover,
+input[type="time"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+  transform: scale(1.08);
+}
+
+/* ── ChatBot Floating Action Button & Window ─────── */
+.chatbot-fab {
+  position: fixed !important;
+  bottom: 20px !important;
+  right: 20px !important;
+  z-index: 99999 !important;
+}
+
+@supports (bottom: env(safe-area-inset-bottom)) {
+  .chatbot-fab {
+    bottom: calc(20px + env(safe-area-inset-bottom)) !important;
+    right: calc(20px + env(safe-area-inset-right)) !important;
+  }
+}
+
+.chatbot-window {
+  position: fixed !important;
+  bottom: 84px !important;
+  right: 16px !important;
+  z-index: 99999 !important;
+}
+
+@supports (bottom: env(safe-area-inset-bottom)) {
+  .chatbot-window {
+    bottom: calc(84px + env(safe-area-inset-bottom)) !important;
+    right: calc(16px + env(safe-area-inset-right)) !important;
+  }
+}
