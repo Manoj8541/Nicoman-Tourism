@@ -1,0 +1,15 @@
+{
+  "name": "nicoman-tourism",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "cd client && npm install && npm run build",
+    "vercel-build": "cd client && npm install && npm run build"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0",
+    "resend": "^3.5.0",
+    "svix": "^2.0.0"
+  }
+}
