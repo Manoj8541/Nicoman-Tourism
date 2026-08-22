@@ -7,6 +7,7 @@ import {
 } from 'react-icons/fa';
 import { GiIsland } from 'react-icons/gi';
 import { Turnstile } from '@marsidev/react-turnstile';
+import { GoogleLogin } from '@react-oauth/google';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
 import PrivacyPolicyModal from '../components/PrivacyPolicyModal';
@@ -253,11 +254,26 @@ const GoogleIcon = () => (
   </svg>
 );
 
-const GoogleButton = ({ text = 'Continue with Google' }) => {
-  const { signInWithGoogle } = useAuth();
+const GoogleButton = ({ text = 'Continue with Google', onSuccess }) => {
+  const { signInWithGoogle, signInWithGoogleIdToken } = useAuth();
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
-  const handleClick = async () => {
+  const handleIdTokenSuccess = async (idToken) => {
+    setLoading(true);
+    const { error } = await signInWithGoogleIdToken(idToken);
+    setLoading(false);
+    if (error) {
+      toast.error('Google Sign-In failed: ' + error);
+    } else {
+      toast.success('🙏 Welcome to Nicoman Tourism!');
+      if (onSuccess) onSuccess();
+      else navigate('/');
+    }
+  };
+
+  const handleStandardRedirect = async () => {
     setLoading(true);
     const { error } = await signInWithGoogle();
     if (error) {
@@ -266,10 +282,36 @@ const GoogleButton = ({ text = 'Continue with Google' }) => {
     }
   };
 
+  // If Client ID is present, render Google's native popup with zero supabase.co redirects!
+  if (googleClientId) {
+    return (
+      <div className="w-full flex flex-col items-center justify-center min-h-[44px]">
+        <div className="w-full flex justify-center [&>div]:!w-full [&>div>div]:!w-full [&_iframe]:!w-full">
+          <GoogleLogin
+            onSuccess={(credentialResponse) => {
+              if (credentialResponse?.credential) {
+                handleIdTokenSuccess(credentialResponse.credential);
+              }
+            }}
+            onError={() => {
+              console.warn('Google native login closed or failed, falling back to redirect');
+              handleStandardRedirect();
+            }}
+            theme="filled_blue"
+            size="large"
+            text={text.toLowerCase().includes('sign in') ? 'signin_with' : 'continue_with'}
+            shape="rectangular"
+            width="100%"
+          />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <button
       type="button"
-      onClick={handleClick}
+      onClick={handleStandardRedirect}
       disabled={loading}
       className="w-full flex items-center justify-center gap-3 py-3 px-4 rounded-xl border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 font-bold text-sm shadow-sm hover:bg-gray-50 dark:hover:bg-gray-750 hover:border-gray-300 dark:hover:border-gray-600 transition-all duration-200 active:scale-[0.99] disabled:opacity-60"
       id="google-auth-btn"

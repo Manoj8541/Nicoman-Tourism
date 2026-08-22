@@ -229,7 +229,7 @@ export function AuthProvider({ children }) {
   };
 
   /**
-   * Sign in / sign up with Google OAuth
+   * Sign in / sign up with Google OAuth (Standard Redirect)
    * @returns {{ error: string|null }}
    */
   const signInWithGoogle = async () => {
@@ -248,6 +248,29 @@ export function AuthProvider({ children }) {
     return { error: null };
   };
 
+  /**
+   * Sign in with Google OpenID Connect ID Token (Native One-Tap / Popup — Zero supabase.co redirects)
+   * @param {string} idToken
+   * @returns {{ error: string|null, data: object|null }}
+   */
+  const signInWithGoogleIdToken = async (idToken) => {
+    try {
+      const { data, error } = await supabase.auth.signInWithIdToken({
+        provider: 'google',
+        token: idToken,
+      });
+      if (error) throw error;
+      if (data?.session?.user) {
+        const prof = await ensureProfile(data.session.user, data.session.access_token);
+        setProfile(prof);
+      }
+      return { error: null, data };
+    } catch (err) {
+      console.error('[Auth] signInWithGoogleIdToken error:', err.message);
+      return { error: err.message, data: null };
+    }
+  };
+
   const refreshProfile = async () => {
     if (user?.id) {
       const prof = await ensureProfile(user, session?.access_token);
@@ -258,9 +281,9 @@ export function AuthProvider({ children }) {
   };
 
   // Admin = 'admin' OR 'superadmin' OR 'demo_admin'
-  const isDemoAdmin  = profile?.role === 'demo_admin';
-  const isAdmin      = profile?.role === 'admin' || profile?.role === 'superadmin' || isDemoAdmin;
   const isSuperAdmin = profile?.role === 'superadmin';
+  const isDemoAdmin = profile?.role === 'demo_admin';
+  const isAdmin = profile?.role === 'admin' || isSuperAdmin || isDemoAdmin;
 
   const value = {
     user,
@@ -274,6 +297,7 @@ export function AuthProvider({ children }) {
     signUp,
     signIn,
     signInWithGoogle,
+    signInWithGoogleIdToken,
     signOut,
     resetPassword,
     updatePassword,
