@@ -328,7 +328,7 @@ const ChatBot = () => {
                       <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-400 rounded-full border-2 border-white" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-bold text-white text-base sm:text-lg leading-none">Island Assistant</h3>
+                      <h3 className="font-bold text-white text-base sm:text-lg leading-none">Nicoman Assistant</h3>
                       {modelLoading ? (
                         <div className="flex items-center gap-1.5 mt-1">
                           <ModelLoadingIcon />
