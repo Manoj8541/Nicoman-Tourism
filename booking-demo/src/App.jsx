@@ -1267,14 +1267,14 @@ export default function App() {
       <div className="app-container">
         <header className="site-header">
           <div className="site-header-content">
-            <div className="brand-wrapper">
+            <a href="/" className="brand-wrapper" title="Return to Nicoman Tourism">
               <div className="brand-icon">
                 <img src="/logo_1.svg" alt="Brand Logo" />
               </div>
               <div className="brand-title">
                 Nicoman <span>Bookings</span>
               </div>
-            </div>
+            </a>
           </div>
         </header>
 
@@ -1294,14 +1294,14 @@ export default function App() {
       {/* Platform Header */}
       <header className="site-header">
         <div className="site-header-content">
-          <div className="brand-wrapper">
+          <a href="/" className="brand-wrapper" title="Return to Nicoman Tourism">
             <div className="brand-icon">
               <img src="/logo_1.svg" alt="Brand Logo" />
             </div>
             <div className="brand-title">
               Nicoman <span>Bookings</span>
             </div>
-          </div>
+          </a>
           <span className="brand-badge">
             Island Reservation Portal
           </span>
