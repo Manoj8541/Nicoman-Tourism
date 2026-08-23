@@ -7,7 +7,7 @@ import { useAuth } from '../context/AuthContext';
 import { SkeletonGrid } from '../components/SkeletonCard';
 
 // ── URL construction — never hardcoded, always from env ───────────────────────
-const BOOKING_BASE = import.meta.env.VITE_BOOKING_DEMO_URL || 'http://localhost:5174';
+const BOOKING_BASE = import.meta.env.VITE_BOOKING_DEMO_URL;
 
 const Hotels = () => {
   const [hotels, setHotels] = useState([]);
@@ -86,9 +86,10 @@ const Hotels = () => {
     // Auto-fetch name & email & phone & userId from signed-in user
     if (profile?.full_name) params.set('guestName', profile.full_name);
     if (user.email)         params.set('guestEmail', user.email);
-    if (profile?.phone)     params.set('guestPhone', profile.phone);
-    if (user.id)            params.set('userId', user.id);
-    window.open(`${BOOKING_BASE}/book?${params.toString()}`, '_blank', 'noopener,noreferrer');
+    const bookingUrl = BOOKING_BASE
+      ? `${BOOKING_BASE}/book?${params.toString()}`
+      : `/book/?${params.toString()}`;
+    window.open(bookingUrl, '_blank', 'noopener,noreferrer');
   };
 
   return (

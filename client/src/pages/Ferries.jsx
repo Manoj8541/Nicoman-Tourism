@@ -272,7 +272,7 @@ const RouteCard = ({ route, index }) => {
             window.location.href = '/auth';
             return;
           }
-          const base = import.meta.env.VITE_BOOKING_DEMO_URL || 'http://localhost:5174';
+          const base = import.meta.env.VITE_BOOKING_DEMO_URL;
           const params = new URLSearchParams({
             type: 'ferry',
             id: route.id,
@@ -287,7 +287,10 @@ const RouteCard = ({ route, index }) => {
           if (user.email)         params.set('guestEmail', user.email);
           if (profile?.phone)     params.set('guestPhone', profile.phone);
           if (user.id)            params.set('userId', user.id);
-          window.open(`${base}/book?${params.toString()}`, '_blank', 'noopener,noreferrer');
+          const bookingUrl = base
+            ? `${base}/book?${params.toString()}`
+            : `/book/?${params.toString()}`;
+          window.open(bookingUrl, '_blank', 'noopener,noreferrer');
         }}
         className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-xl
           text-sm font-bold transition-all duration-200

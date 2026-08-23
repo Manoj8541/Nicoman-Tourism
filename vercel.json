@@ -1,11 +1,13 @@
 {
   "version": 2,
-  "buildCommand": "cd client && npm install && npm run build",
+  "buildCommand": "node build.js",
   "outputDirectory": "client/dist",
-  "installCommand": "npm install && cd client && npm install",
+  "installCommand": "npm install && cd client && npm install && cd ../booking-demo && npm install",
   "framework": null,
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api" },
+    { "source": "/book", "destination": "/book/index.html" },
+    { "source": "/book/(.*)", "destination": "/book/$1" },
     { "source": "/(.*)", "destination": "/index.html" }
   ],
   "headers": [
