@@ -666,7 +666,7 @@ function DetailsStep({ params, initialData, onNext }) {
   const errors = {
     name: !nameValid ? 'Full name is required (at least 2 characters)' : '',
     email: !emailValid ? 'Please enter a valid email address' : '',
-    phone: !phoneValid ? 'Please enter a valid 10-digit phone number' : '',
+    phone: !phoneValid ? 'Please enter a valid phone number (e.g. +91 9876543210 or +1 1234567890)' : '',
   };
 
   const isFormValid = nameValid && emailValid && phoneValid;
@@ -741,7 +741,7 @@ function DetailsStep({ params, initialData, onNext }) {
         <input
           type="tel"
           className={`custom-input ${touched.phone && errors.phone ? 'error' : ''}`}
-          placeholder="10-digit mobile number"
+          placeholder="e.g. +91 9876543210 or +1 1234567890"
           value={phone}
           onChange={e => setPhone(e.target.value)}
           onBlur={() => markTouched('phone')}
