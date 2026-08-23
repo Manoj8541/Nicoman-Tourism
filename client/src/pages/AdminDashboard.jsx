@@ -3154,7 +3154,7 @@ function DeletedAccountsTab() {
     try {
       const headers = await getAdminHeaders();
       await axios.post('/api/admin/deleted-profiles/restore', { id: account.id }, { headers });
-      toast.success(`Account ${account.email} restored! They can now log in via Google or Email.`);
+      toast.success(`Account ${account.email} restored! A password reset link has been emailed to the user.`);
       load(false);
     } catch (err) {
       toast.error('Failed to restore account: ' + (err.response?.data?.error || err.message));
