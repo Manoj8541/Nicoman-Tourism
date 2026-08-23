@@ -654,14 +654,14 @@ function AvailabilityStep({ params, conflictNotice, onNext }) {
 // ═════════════════════════════════════════════════════════════════════════════
 
 function DetailsStep({ params, initialData, onNext }) {
-  const [name, setName] = useState(params.guestName ? decodeURIComponent(params.guestName) : '');
-  const [email, setEmail] = useState(params.guestEmail ? decodeURIComponent(params.guestEmail) : '');
-  const [phone, setPhone] = useState(params.guestPhone ? decodeURIComponent(params.guestPhone) : '');
+  const [name, setName] = useState(initialData?.guestName || (params.guestName ? decodeURIComponent(params.guestName) : ''));
+  const [email, setEmail] = useState(initialData?.guestEmail || (params.guestEmail ? decodeURIComponent(params.guestEmail) : ''));
+  const [phone, setPhone] = useState(initialData?.guestPhone || (params.guestPhone ? decodeURIComponent(params.guestPhone) : ''));
   const [touched, setTouched] = useState({});
 
   const nameValid = name.trim().length >= 2;
-  const emailValid = /^[^s@]+@[^s@]+.[^s@]+$/.test(email.trim());
-  const phoneValid = /^\d{10,14}$/.test(phone.replace(/[\s\-().+]/g, ''));
+  const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+  const phoneValid = /^\d{7,15}$/.test(phone.replace(/[\s\-().+]/g, ''));
 
   const errors = {
     name: !nameValid ? 'Full name is required (at least 2 characters)' : '',
@@ -860,7 +860,7 @@ function PaymentStep({ params, bookingData, onConflict, onConfirmed }) {
 
       // ── 3. Persist to Supabase Table (with seamless backend API fallback) ──
       let savedRecord = null;
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      const apiUrl = import.meta.env.VITE_API_URL || (typeof window !== 'undefined' ? window.location.origin : '');
 
       if (isHotel) {
         const hotelPayload = {
