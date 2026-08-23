@@ -1640,18 +1640,75 @@ app.post('/api/admin/deleted-profiles/restore', requireAdmin, async (req, res) =
       }
     }
 
-    // Clean up from deleted_profiles by user_id and email so no duplicates remain
-    await supabase.from('deleted_profiles').delete().eq('user_id', targetUserId);
-    if (validAuthUserId) {
-      await supabase.from('deleted_profiles').delete().eq('user_id', validAuthUserId);
+    // ── Generate password reset link & notify user via Resend ─────────────
+    let recoveryLink = null;
+    try {
+      const origin = req.headers.origin || 'https://nicoman-tourism.vercel.app';
+      const { data: linkData } = await supabase.auth.admin.generateLink({
+        type: 'recovery',
+        email: delProf.email,
+        options: { redirectTo: `${origin}/reset-password` },
+      });
+      if (linkData?.properties?.action_link) {
+        recoveryLink = linkData.properties.action_link;
+      }
+    } catch (linkErr) {
+      console.warn('[restore generateLink warning]:', linkErr.message);
     }
-    if (email) {
-      await supabase.from('deleted_profiles').delete().eq('email', email);
+
+    // Send email notification to user via Resend
+    const resendKey = process.env.RESEND_API_KEY;
+    if (resendKey && delProf.email) {
+      try {
+        const { Resend } = await import('resend');
+        const resend = new Resend(resendKey);
+        const origin = req.headers.origin || 'https://nicoman-tourism.vercel.app';
+        const actionUrl = recoveryLink || `${origin}/reset-password`;
+
+        await resend.emails.send({
+          from: process.env.RESEND_FROM_EMAIL || 'Nicoman Tourism <support@nicoman.man-ray.is-a.dev>',
+          to: delProf.email,
+          subject: 'Your Nicoman Tourism Account Has Been Restored! 🌴',
+          html: `
+            <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; color: #1e293b; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; overflow: hidden;">
+              <div style="background: linear-gradient(135deg, #14b8a6, #06b6d4); padding: 28px 32px; text-align: center;">
+                <h1 style="color: #ffffff; margin: 0; font-size: 22px; font-weight: 800;">Welcome Back to Nicoman Tourism! 🏝️</h1>
+                <p style="color: rgba(255, 255, 255, 0.9); margin: 6px 0 0 0; font-size: 14px;">Account Restored Successfully</p>
+              </div>
+              <div style="padding: 28px 32px;">
+                <p style="color: #475569; font-size: 15px; margin: 0 0 16px 0;">Hello <strong>${delProf.full_name || 'Traveler'}</strong>,</p>
+                <p style="color: #475569; font-size: 14px; line-height: 1.6; margin: 0 0 20px 0;">
+                  Good news! Your deleted Nicoman Tourism account (<strong>${delProf.email}</strong>) has been reviewed and restored by our team.
+                </p>
+                <div style="background: #f0fdfa; border-left: 4px solid #14b8a6; padding: 16px 20px; border-radius: 0 12px 12px 0; margin-bottom: 24px;">
+                  <p style="color: #0f172a; font-size: 14px; margin: 0 0 6px 0; font-weight: 700;">How to log in:</p>
+                  <ul style="color: #334155; font-size: 13px; margin: 0; padding-left: 18px; line-height: 1.6;">
+                    <li><strong>Google Sign-In:</strong> Simply click "Sign in with Google" on the login page.</li>
+                    <li><strong>Email & Password:</strong> Click the button below to set your password.</li>
+                  </ul>
+                </div>
+                <div style="text-align: center; margin: 28px 0;">
+                  <a href="${actionUrl}" style="background: linear-gradient(135deg, #14b8a6, #06b6d4); color: #ffffff; text-decoration: none; padding: 12px 28px; border-radius: 12px; font-weight: 700; font-size: 14px; display: inline-block; box-shadow: 0 4px 12px rgba(20, 184, 166, 0.3);">
+                    Set Your Password & Log In →
+                  </a>
+                </div>
+                <p style="color: #94a3b8; font-size: 12px; text-align: center; margin: 0;">
+                  If you did not request this restoration, please contact our support team at <a href="mailto:nicomantourism.myth520@silomails.com" style="color: #14b8a6;">nicomantourism.myth520@silomails.com</a>.
+                </p>
+              </div>
+            </div>
+          `,
+        });
+        console.log(`[restore] Sent account restoration email to ${delProf.email}`);
+      } catch (emailErr) {
+        console.warn('[restore email notification warning]:', emailErr.message);
+      }
     }
 
     res.json({
       success: true,
-      message: `Account ${delProf.email} revoked & restored to profiles successfully!`,
+      message: `Account ${delProf.email} restored successfully! Password recovery link sent to user.`,
+      recovery_link: recoveryLink,
       data: restored,
     });
   } catch (err) {
