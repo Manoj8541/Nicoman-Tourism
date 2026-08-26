@@ -1,0 +1,63 @@
+# ==============================================================================
+#  NICOMAN TOURISM — DOCKER COMPOSE CONFIGURATION
+# ==============================================================================
+#  Quick Start:
+#    docker compose up --build
+#
+#  The full-stack application will be live at:
+#    http://localhost:5000
+#
+#  Booking portal embedded at:
+#    http://localhost:5000/book/
+# ==============================================================================
+
+version: '3.8'
+
+services:
+  app:
+    container_name: nicoman-tourism-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: nicoman-tourism:latest
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=production
+      - PORT=5000
+      - SUPABASE_URL=${SUPABASE_URL:-https://aojjkrpvzlmxylcyaddg.supabase.co}
+      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
+      - TURNSTILE_SECRET_KEY=${TURNSTILE_SECRET_KEY}
+      - RESEND_API_KEY=${RESEND_API_KEY}
+      - RESEND_FROM_EMAIL=${RESEND_FROM_EMAIL}
+      - RESEND_WEBHOOK_SECRET=${RESEND_WEBHOOK_SECRET}
+    env_file:
+      - .env
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/api/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+# ── Optional: Standalone Local PostgreSQL (for complete offline hosting) ──────
+# To start with a local database instead of cloud Supabase:
+#   docker compose --profile local-db up --build
+  postgres:
+    profiles: ["local-db"]
+    container_name: nicoman-tourism-postgres
+    image: postgres:15-alpine
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres123}
+      POSTGRES_DB: ${POSTGRES_DB:-nicoman_tourism}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./supabase_schema.sql:/docker-entrypoint-initdb.d/init.sql:ro
+
+volumes:
+  pgdata:
