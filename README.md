@@ -1,6 +1,6 @@
 <div align="center">
 
-<video src="https://github.com/Manoj8541/Nicoman-Tourism/raw/main/client/public/output/beach.mp4" width="100%" autoplay loop muted playsinline disablepictureinpicture disableremoteplayback></video>
+<video src="https://github.com/user-attachments/assets/5a107315-627f-41eb-a784-66ea29b1e7a2" width="100%" autoplay loop muted playsinline disablepictureinpicture disableremoteplayback></video>
 
 ![Animated Tagline](./client/public/tagline.svg)
 
