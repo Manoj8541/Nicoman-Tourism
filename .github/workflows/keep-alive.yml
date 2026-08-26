@@ -1,39 +1,30 @@
-name: Keep Supabase & Vercel Active
+name: Keep Supabase Active
 
 on:
   schedule:
-    # Runs every 4 days at 04:00 UTC (well before the 7-day inactivity pause)
-    - cron: '0 4 */4 * *'
-  workflow_dispatch: # Allows manual trigger from GitHub Actions tab anytime
+    # Runs automatically at 00:00 UTC every 6 days
+    - cron: '0 0 */6 * *'
+  workflow_dispatch: # Allows manual run test from GitHub Actions tab
 
 jobs:
-  keep-alive:
-    name: Ping Supabase & Backend API
+  ping:
+    name: Ping Database & Backend
     runs-on: ubuntu-latest
     steps:
-      - name: Ping Live Website & Supabase Backend
+      - name: Send Keep-Alive Request
         run: |
-          echo "⏰ [$(date -u)] Starting Keep-Alive Ping..."
+          echo "Starting 6-day scheduled keep-alive ping..."
           
-          # 1. Ping Vercel Serverless Endpoint (Triggers DB query)
-          echo "📡 Pinging Live Vercel API..."
-          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "https://nicoman-tourism.vercel.app/api/tourist-places")
-          echo "   Vercel API Response: HTTP $HTTP_STATUS"
+          # Ping the live API endpoint (internally queries Supabase DB, resetting the 7-day timer)
+          # Zero hardcoded keys in YAML — safe for public repositories.
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 "https://nicoman-tourism.vercel.app/api/tourist-places")
+          echo "Response Status Code: $HTTP_STATUS"
           
-          # 2. Direct Ping to Supabase Database REST API
-          echo "🗄️ Pinging Supabase Database directly..."
-          SUPABASE_ANON_KEY="${{ secrets.VITE_SUPABASE_ANON_KEY }}"
-          if [ -z "$SUPABASE_ANON_KEY" ]; then
-            SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFvamprcnB2emxteHlsY3lhZGRnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU0MTQ0ODQsImV4cCI6MjEwMDk5MDQ4NH0.OrdFjxJd4oc5X6zvcVWHKhe297TJgB52OuFJk6m1YMU"
-          fi
-          
-          DB_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
-            "https://aojjkrpvzlmxylcyaddg.supabase.co/rest/v1/tourist_places?select=id&limit=1" \
-            -H "apikey: $SUPABASE_ANON_KEY")
-          echo "   Supabase REST API Response: HTTP $DB_STATUS"
-          
-          if [ "$HTTP_STATUS" -eq 200 ] || [ "$DB_STATUS" -eq 200 ]; then
-            echo "✅ Keep-Alive Ping Succeeded! Supabase project is active."
+          # If status is 200 OK, exit successfully (GitHub stays silent, no notification)
+          if [ "$HTTP_STATUS" -eq 200 ]; then
+            echo "SUCCESS: Database query executed. Supabase 7-day inactivity timer reset."
+            exit 0
           else
-            echo "⚠️ Non-200 response received, but request was registered on Supabase."
+            echo "ERROR: Received HTTP $HTTP_STATUS. Marking workflow as failed to alert you."
+            exit 1
           fi
