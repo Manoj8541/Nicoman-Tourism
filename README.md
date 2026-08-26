@@ -177,6 +177,22 @@ For in-depth architectural details, database schema explanations, PostgreSQL Row
 📖 **[Read the Complete Technical Architecture Document: PROJECT_IMPLEMENTATION.md](./PROJECT_IMPLEMENTATION.md)**
 
 ---
-## ⭐ If you like this project
+---
 
-Give it a star ⭐ on GitHub
+## ⚖️ Legal, Media & Trademark Disclaimer
+
+> [!NOTE]
+> **Non-Commercial Educational & Portfolio Notice**
+> 
+> * **Educational & Demonstration Purpose:** This software application is developed exclusively for **non-commercial educational, engineering demonstration, and portfolio purposes**. No commercial transactions, booking monetization, or financial processing are conducted through this portal.
+> * **Media, Photography & Trademarks:** All destination imagery, hotel photography, ferry vessel names, brand trademarks, and logos displayed within this repository and live demonstration are the property of their respective copyright and intellectual property owners. Visual assets are utilized under the **Fair Use** doctrine (Section 107 of the US Copyright Act and Section 52 of the Indian Copyright Act, 1957) for technological showcase and educational review.
+> * **No Official Affiliation:** This project is an independent engineering development and is not officially affiliated with, authorized by, sponsored by, or endorsed by the Directorate of Tourism (Andaman and Nicobar Administration) or any private hotel/ferry operators mentioned herein.
+> * **DMCA / Content Takedown Safe Harbor:** If you are the copyright owner of any image, media asset, or trademark referenced in this project and wish to have it credited, modified, or permanently removed, please submit a request via [GitHub Issues](https://github.com/Manoj8541/Nicoman-Tourism/issues). Any verified request will be addressed promptly in good faith.
+> * **Limitation of Liability & "As-Is" Warranty:** The software and schedules provided herein are for demonstration simulation only and may not reflect real-time maritime conditions. The author assumes no legal liability for travel decisions or bookings made outside this demonstrative environment.
+
+---
+
+## ⭐ Support & Feedback
+
+If you found this project helpful or inspiring, feel free to give it a **Star ⭐** on GitHub!
+
