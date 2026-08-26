@@ -185,6 +185,9 @@ function MapInner({ places, sorted, icons, visibleIds, selected, onPin, onMapCli
 // ── Info card (shared between desktop popup + mobile bottom-sheet) ─────────────
 function PlaceCard({ place, onClose }) {
   const cat = CAT[place.category] || CAT.Nature;
+  const searchPrompt = `Tell me more about ${place.name} in Andaman and Nicobar Islands, including best things to do, attractions, how to reach, timings, entry fee and travel tips`;
+  const googleAiUrl = `https://www.google.com/search?q=${encodeURIComponent(searchPrompt)}`;
+
   return (
     <>
       <div className="relative h-36 rounded-xl overflow-hidden mb-3 flex-shrink-0">
@@ -226,9 +229,22 @@ function PlaceCard({ place, onClose }) {
       <p className="text-xs text-gray-600 dark:text-gray-300 leading-relaxed mb-3 line-clamp-3">
         {place.description}
       </p>
-      <div className="flex items-center gap-1 text-xs text-gray-400">
-        <FaClock className="text-teal-400 flex-shrink-0" />
-        <span>Best: {place.bestTime}</span>
+
+      <div className="flex items-center justify-between gap-2 pt-2 border-t border-gray-100 dark:border-gray-800">
+        <div className="flex items-center gap-1 text-xs text-gray-400">
+          <FaClock className="text-teal-400 flex-shrink-0" />
+          <span>Best: {place.bestTime}</span>
+        </div>
+        <a
+          href={googleAiUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1 text-xs font-bold text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 hover:underline transition-colors group"
+          title={`Ask Google AI more about ${place.name}`}
+        >
+          <span>Explore more</span>
+          <span className="transition-transform group-hover:translate-x-0.5">&rarr;</span>
+        </a>
       </div>
     </>
   );
@@ -236,9 +252,9 @@ function PlaceCard({ place, onClose }) {
 
 // ── Desktop floating popup ─────────────────────────────────────────────────────
 function DesktopPopup({ place, pixelPos, mapW, onClose }) {
-  const W = 284;
+  const W = 290;
   let left = pixelPos.x - W / 2;
-  let top  = pixelPos.y - 310;
+  let top  = pixelPos.y - 330;
   if (top < 8) top = pixelPos.y + 30;
   left = Math.max(8, Math.min(left, mapW - W - 8));
   const tailAbove = top < pixelPos.y;
