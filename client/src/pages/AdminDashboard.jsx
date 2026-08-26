@@ -860,6 +860,7 @@ function ShipScheduleTab() {
     route_type: 'inter_island',
     departure_lat: '', departure_lng: '',
     arrival_lat: '', arrival_lng: '',
+    waypoints: '',
   };
 
   const load = useCallback(async (isSilent = false) => {
@@ -891,6 +892,7 @@ function ShipScheduleTab() {
       departure_lng: s.departure_lng ?? '',
       arrival_lat: s.arrival_lat ?? '',
       arrival_lng: s.arrival_lng ?? '',
+      waypoints: s.waypoints ? (typeof s.waypoints === 'string' ? s.waypoints : JSON.stringify(s.waypoints)) : '',
     });
     setModal(s);
   };
@@ -919,6 +921,27 @@ function ShipScheduleTab() {
       return toast.error('Valid Arrival Latitude and Longitude are required');
     }
 
+    let parsedWaypoints = null;
+    if (form.waypoints) {
+      if (typeof form.waypoints === 'string' && form.waypoints.trim()) {
+        try {
+          parsedWaypoints = JSON.parse(form.waypoints);
+        } catch {
+          try {
+            parsedWaypoints = form.waypoints
+              .split(';')
+              .map(p => p.split(',').map(n => parseFloat(n.trim())))
+              .filter(p => p.length === 2 && !isNaN(p[0]) && !isNaN(p[1]));
+            if (parsedWaypoints.length === 0) parsedWaypoints = null;
+          } catch {
+            parsedWaypoints = null;
+          }
+        }
+      } else if (Array.isArray(form.waypoints)) {
+        parsedWaypoints = form.waypoints;
+      }
+    }
+
     const payload = {
       ...form,
       price,
@@ -928,6 +951,7 @@ function ShipScheduleTab() {
       departure_lng: depLng,
       arrival_lat: arrLat,
       arrival_lng: arrLng,
+      waypoints: parsedWaypoints,
     };
 
     // Instant Optimistic Update
@@ -1166,6 +1190,19 @@ function ShipScheduleTab() {
                   </Field>
                   <Field label="Arrival Longitude" required>
                     <input type="number" step="any" className="input-field" value={form.arrival_lng || ''} onChange={e => set('arrival_lng', e.target.value)} placeholder="92.9996" required />
+                  </Field>
+                </div>
+                <div className="mt-3">
+                  <Field label="Waypoints / Polyline Navigation Coordinates (Optional)">
+                    <input
+                      className="input-field font-mono text-xs"
+                      value={typeof form.waypoints === 'string' ? form.waypoints : (form.waypoints ? JSON.stringify(form.waypoints) : '')}
+                      onChange={e => set('waypoints', e.target.value)}
+                      placeholder="e.g. [[11.75, 92.80], [11.85, 92.90]]"
+                    />
+                    <p className="text-[11px] text-gray-400 mt-1">
+                      Intermediate coordinates plotted on the interactive route map to form curved navigation polylines.
+                    </p>
                   </Field>
                 </div>
               </div>
