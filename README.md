@@ -1,6 +1,6 @@
 <div align="center">
 
-<video src="https://github.com/user-attachments/assets/5a107315-627f-41eb-a784-66ea29b1e7a2" width="100%" autoplay loop muted playsinline disablepictureinpicture disableremoteplayback></video>
+[![Nicoman Beach Banner](./client/public/output/beach.webp)](https://nicoman-tourism.vercel.app)
 
 ![Animated Tagline](./client/public/tagline.svg)
 
