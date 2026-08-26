@@ -16,8 +16,7 @@ jobs:
           echo "Starting 6-day scheduled keep-alive ping..."
           
           # Ping the live API endpoint (internally queries Supabase DB, resetting the 7-day timer)
-          # Zero hardcoded keys in YAML — safe for public repositories.
-          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 "https://nicoman-tourism.vercel.app/api/tourist-places")
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 "https://nicoman-tourism.vercel.app/api/health")
           echo "Response Status Code: $HTTP_STATUS"
           
           # If status is 200 OK, exit successfully (GitHub stays silent, no notification)
