@@ -246,6 +246,20 @@ const shipSchedule = [
 ];
 
 // API Routes — Fetch from Supabase DB first, fallback to static mock data if DB empty
+
+// Zero-Egress, Zero-Memory Health Ping (Resets Supabase 7-day timer with 0 bytes data transfer)
+app.get('/api/health', async (req, res) => {
+  if (supabase) {
+    try {
+      // 'head: true' sends a HEAD request: PostgreSQL returns ZERO rows of data (0 egress bandwidth & 0 RAM bloat)
+      await supabase.from('profiles').select('id', { count: 'exact', head: true });
+    } catch (e) {
+      console.error('[server] Health ping database error:', e.message);
+    }
+  }
+  res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
 app.get('/api/tourist-places', async (req, res) => {
   if (supabase) {
     try {
