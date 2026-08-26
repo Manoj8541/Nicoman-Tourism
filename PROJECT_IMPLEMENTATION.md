@@ -1,6 +1,6 @@
 # System Architecture & Technical Implementation
 
-> **Purpose Statement:** This is the technical/architecture documentation layer — written for a technical interviewer or a developer trying to understand how the system actually works internally. This is NOT marketing content, and it must contain NO folder/file structure tree — the focus is exclusively on concepts, data flow, and design reasoning, not directory layout.
+> **Purpose Statement:** This is the technical/architecture documentation layer — written for a visitor or a developer trying to understand how the system actually works internally. This is NOT marketing content, and it must contain NO folder/file structure tree — the focus is exclusively on concepts, data flow, and design reasoning, not directory layout.
 
 ---
 
