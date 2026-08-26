@@ -1,6 +1,6 @@
 <div align="center">
 
-<video src="./client/public/output/beach.mp4" width="100%" autoplay loop muted playsinline disablepictureinpicture disableremoteplayback></video>
+<video src="https://github.com/Manoj8541/Nicoman-Tourism/raw/main/client/public/output/beach.mp4" width="100%" autoplay loop muted playsinline disablepictureinpicture disableremoteplayback></video>
 
 ![Animated Tagline](./client/public/tagline.svg)
 
