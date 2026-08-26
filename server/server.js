@@ -252,7 +252,7 @@ app.get('/api/health', async (req, res) => {
   if (supabase) {
     try {
       // 'head: true' sends a HEAD request: PostgreSQL returns ZERO rows of data (0 egress bandwidth & 0 RAM bloat)
-      await supabase.from('profiles').select('id', { count: 'exact', head: true });
+      await supabase.from('tourist_places').select('id', { count: 'exact', head: true });
     } catch (e) {
       console.error('[server] Health ping database error:', e.message);
     }
