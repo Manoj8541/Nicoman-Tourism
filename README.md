@@ -139,7 +139,15 @@ flowchart TD
 * **Informational Authority vs. Direct Payment Gateway:** Financial checkout is isolated to a standalone reservation demonstration engine. Decoupling high-volume informational traffic from transactional workflows mirrors real-world travel authority infrastructure.
 * **On-Device Machine Learning:** Sentiment analysis and chatbot intent grounding execute locally using WebAssembly and ONNX Runtime. This eliminates recurring third-party API costs and eliminates cloud latency while maintaining user data privacy.
 * **Zero Dedicated Server Overhead:** Built entirely with serverless functions, static edge distribution, and managed PostgreSQL with Row Level Security, ensuring continuous operation with zero maintenance requirements.
+---
+---
+## Technical Documentation
 
+For in-depth architectural details, database schema explanations, PostgreSQL Row Level Security policies, and performance engineering rationale:
+
+📖 **[Read the Complete Technical Architecture Document: PROJECT_IMPLEMENTATION.md](./PROJECT_IMPLEMENTATION.md)**
+
+---
 ---
 
 ## Getting Started
@@ -167,14 +175,6 @@ cd ..
 # 4. Launch local development servers
 npm run dev
 ```
-
----
-
-## Technical Documentation
-
-For in-depth architectural details, database schema explanations, PostgreSQL Row Level Security policies, and performance engineering rationale:
-
-📖 **[Read the Complete Technical Architecture Document: PROJECT_IMPLEMENTATION.md](./PROJECT_IMPLEMENTATION.md)**
 
 ---
 ---
