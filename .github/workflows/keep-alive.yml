@@ -1,0 +1,28 @@
+name: Keep Supabase Active
+
+on:
+  schedule:
+    # Runs every 4 days at 00:00 UTC.
+    - cron: '0 0 */4 * *'
+  workflow_dispatch: # Allows manual run test from GitHub Actions tab
+
+jobs:
+  ping:
+    name: Ping Database & Backend
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Keep-Alive Request
+        run: |
+          echo "Starting scheduled keep-alive ping..."
+          
+          # Ping the live API endpoint with redirect following (-L) to handle Vercel edge rewrites
+          HTTP_STATUS=$(curl -sL -o /dev/null -w "%{http_code}" --max-time 30 "https://nicoman-tourism.vercel.app/api/health")
+          echo "Response Status Code: $HTTP_STATUS"
+          
+          if [ "$HTTP_STATUS" -eq 200 ]; then
+            echo "SUCCESS: Real PostgreSQL query executed. Supabase 7-day inactivity timer reset."
+            exit 0
+          else
+            echo "ERROR: Received HTTP $HTTP_STATUS. Database was NOT touched — check Vercel logs."
+            exit 1
+          fi
