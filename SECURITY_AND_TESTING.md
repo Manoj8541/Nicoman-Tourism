@@ -44,36 +44,51 @@ The application implements a multi-layered defense-in-depth model safeguarding d
 
 ```mermaid
 flowchart TD
-    subgraph Perimeter["1. Perimeter & Bot Defense"]
-        Req["Inbound HTTP Request"]
-        Turnstile["Cloudflare Turnstile (Bot Interception)"]
-        CORS["Strict CORS Whitelist (/api)"]
-        RateLimiter["Sliding-Window In-Memory Rate Limiter"]
+    subgraph ClientPerimeter["1. Perimeter & Bot Defense"]
+        Req["Incoming Request / Visitor Action"]
+        CF["Cloudflare Turnstile<br/>(Bot & Spam Interception)"]
+        CORS["Strict CORS Policy<br/>(Allowed Origins Only)"]
+        RateLimit{"Rate Limiter<br/>(100 req / 15 min)"}
+        Block429["HTTP 429<br/>Too Many Requests"]
     end
 
-    subgraph Gateway["2. Serverless API Gateway"]
-        Svix["Svix HMAC Webhook Verification"]
-        JWT["Supabase JWT Token Validation"]
-        RBAC["Role-Based Route Guard (user | admin | superadmin)"]
+    subgraph ServerlessGateway["2. Serverless API Gateway"]
+        AuthType{"Request Type?"}
+        Svix["Svix HMAC Verification<br/>(Inbound Email Webhooks)"]
+        JWT["Supabase JWT & RBAC Guard<br/>(User / Admin / Superadmin)"]
+        APIHandler["Express Route Controllers<br/>(Business Logic & Bookings)"]
     end
 
-    subgraph Terminal["3. Terminal Session Security"]
-        Shield["Admin Shield Inactivity Lock (10m)"]
-        Sync["BroadcastChannel Cross-Tab Sync (1ms)"]
-        Immune["localStorage F5 Reload Immunity"]
-        Logout["Inactivity Auto-Logout (25m)"]
+    subgraph DataSecurity["3. Database Security Layer"]
+        RLS["PostgreSQL Row Level Security<br/>(Kernel-Level Tenant Isolation)"]
+        DB[("Encrypted PostgreSQL Storage")]
     end
 
-    subgraph Database["4. Managed PostgreSQL Layer"]
-        RLS["Row Level Security Policies (Kernel-Level)"]
-        EncryptedTables[("Encrypted PostgreSQL Tables")]
+    subgraph AdminShieldDefense["4. Admin Terminal Defense (Client-Side)"]
+        AdminSession["Active Admin Dashboard Session"]
+        ShieldLock["Admin Shield Inactivity Lock (10m)"]
+        SyncTab["BroadcastChannel Cross-Tab Sync (1ms)"]
+        F5Guard["localStorage Lock Persistence (F5 Immunity)"]
+        AutoLogout["Auto-Logout & Session Invalidation (25m)"]
     end
 
-    Req --> Turnstile --> CORS --> RateLimiter --> Gateway
-    RateLimiter -- "Exceeded Limit" --> 429["HTTP 429 Too Many Requests"]
-    Gateway --> Svix --> JWT --> RBAC
-    RBAC --> Terminal --> Shield --> Sync & Immune & Logout
-    Terminal --> Database --> RLS --> EncryptedTables
+    %% Perimeter Flow
+    Req --> CF --> CORS --> RateLimit
+    RateLimit -- "Exceeded" --> Block429
+    RateLimit -- "Permitted" --> AuthType
+
+    %% Gateway Flow
+    AuthType -- "Webhook" --> Svix --> APIHandler
+    AuthType -- "API Call" --> JWT --> APIHandler
+
+    %% Database Flow
+    APIHandler --> RLS --> DB
+
+    %% Admin Terminal Flow
+    AdminSession --> ShieldLock
+    ShieldLock --> SyncTab
+    ShieldLock --> F5Guard
+    ShieldLock -- "Prolonged Inactivity" --> AutoLogout
 ```
 
 ### 2.1 Threat Mitigation Matrix
