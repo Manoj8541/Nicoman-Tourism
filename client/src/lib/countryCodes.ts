@@ -1,7 +1,22 @@
-// client/src/lib/countryCodes.js
+// client/src/lib/countryCodes.ts
 // Standard International Country Dial Codes, Flag Emojis, and Phone Max Digits
 
-export const COUNTRY_CODES = [
+export interface CountryCode {
+  code: string;
+  iso: string;
+  name: string;
+  flag: string;
+  maxDigits: number;
+  placeholder: string;
+}
+
+export interface ParsedPhone {
+  country: CountryCode;
+  digits: string;
+  fullFormatted: string;
+}
+
+export const COUNTRY_CODES: CountryCode[] = [
   { code: '+91',  iso: 'IN', name: 'India', flag: '🇮🇳', maxDigits: 10, placeholder: '98765 43210' },
   { code: '+1',   iso: 'US', name: 'United States', flag: '🇺🇸', maxDigits: 10, placeholder: '202 555 0123' },
   { code: '+44',  iso: 'GB', name: 'United Kingdom', flag: '🇬🇧', maxDigits: 10, placeholder: '7911 123456' },
@@ -61,9 +76,9 @@ export const COUNTRY_CODES = [
   { code: '+962', iso: 'JO', name: 'Jordan', flag: '🇯🇴', maxDigits: 9, placeholder: '7 9123 4567' },
 ];
 
-export const DEFAULT_COUNTRY = COUNTRY_CODES[0]; // India (+91)
+export const DEFAULT_COUNTRY: CountryCode = COUNTRY_CODES[0]; // India (+91)
 
-export function parsePhoneNumber(rawPhone) {
+export function parsePhoneNumber(rawPhone?: string): ParsedPhone {
   if (!rawPhone || typeof rawPhone !== 'string') {
     return { country: DEFAULT_COUNTRY, digits: '', fullFormatted: '' };
   }

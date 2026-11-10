@@ -2,6 +2,7 @@
 node_modules/
 client/node_modules/
 server/node_modules/
+booking-demo/node_modules/
 
 # Environment Variables & Secrets (NEVER COMMIT)
 .env
@@ -10,10 +11,12 @@ server/node_modules/
 *.env
 client/.env
 server/.env
+booking-demo/.env
 
 # Build outputs
 dist/
 client/dist/
+booking-demo/dist/
 dist-ssr/
 *.local
 
@@ -24,6 +27,11 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 *.log
+
+# Backup & temporary files
+*.backup*
+*.bak
+*.tmp
 
 # OS generated files
 .DS_Store

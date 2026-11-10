@@ -43,7 +43,13 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
   <style>
-    /* Loading Screen */
+    /* ─── Tropical Island Kinetic Compass Intro (Matches Homepage Aesthetic) ─── */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
     #loading-screen {
       position: fixed;
       inset: 0;
@@ -51,80 +57,406 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
-      z-index: 9999;
-      transition: opacity 0.5s, visibility 0.5s;
+      background: radial-gradient(circle at 50% 38%, #082438 0%, #051826 50%, #020b12 100%);
+      z-index: 99999;
+      overflow: hidden;
+      padding: 20px 16px;
+      user-select: none;
+      -webkit-user-select: none;
+      transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), transform 0.75s cubic-bezier(0.16, 1, 0.3, 1), filter 0.75s ease, visibility 0.75s;
     }
 
     #loading-screen.hidden {
       opacity: 0;
+      transform: scale(1.05);
+      filter: blur(8px);
       visibility: hidden;
+      pointer-events: none;
     }
 
-    .loader {
-      position: relative;
-      width: 80px;
-      height: 80px;
-    }
-
-    .loader::before,
-    .loader::after {
-      content: '';
+    /* Ambient Warm Tropical Glow */
+    .tropical-glow {
       position: absolute;
+      width: clamp(320px, 80vw, 520px);
+      height: clamp(320px, 80vw, 520px);
       border-radius: 50%;
-      animation: pulse 2s ease-in-out infinite;
+      background: radial-gradient(circle, rgba(20, 184, 166, 0.22) 0%, rgba(6, 182, 212, 0.12) 40%, transparent 70%);
+      filter: blur(60px);
+      pointer-events: none;
+      animation: tropicalPulse 5s ease-in-out infinite alternate;
     }
 
-    .loader::before {
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(135deg, #14b8a6, #06b6d4);
-      animation-delay: 0s;
-    }
+    @keyframes tropicalPulse {
+      0% {
+        transform: scale(0.92);
+        opacity: 0.7;
+      }
 
-    .loader::after {
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(135deg, #14b8a6, #06b6d4);
-      animation-delay: 0.5s;
-    }
-
-    @keyframes pulse {
-
-      0%,
       100% {
-        transform: scale(0.8);
+        transform: scale(1.15);
         opacity: 1;
       }
+    }
 
-      50% {
-        transform: scale(1.2);
-        opacity: 0.5;
+    /* ─── Mathematical Gyroscopic Island Compass ─────────────────────────── */
+    .compass-wrap {
+      position: relative;
+      width: clamp(210px, 50vw, 240px);
+      height: clamp(210px, 50vw, 240px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 22px;
+    }
+
+    /* Celestial Rotating Rings */
+    .outer-celestial-ring {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 1px dashed rgba(45, 212, 191, 0.45);
+      box-shadow: 0 0 35px rgba(6, 182, 212, 0.15), inset 0 0 20px rgba(20, 184, 166, 0.1);
+      animation: rotateClockwise 30s linear infinite;
+    }
+
+    .secondary-orbit-ring {
+      position: absolute;
+      inset: 12px;
+      border-radius: 50%;
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      border-left-color: #38bdf8;
+      border-right-color: #2dd4bf;
+      animation: rotateCounter 14s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    }
+
+    @keyframes rotateClockwise {
+      from {
+        transform: rotate(0deg);
+      }
+
+      to {
+        transform: rotate(360deg);
       }
     }
 
-    .loader-text {
-      margin-top: 30px;
-      color: white;
-      font-family: 'Inter', sans-serif;
-      font-size: 18px;
-      font-weight: 600;
-      letter-spacing: 2px;
-      background: linear-gradient(90deg, #14b8a6, #06b6d4, #14b8a6);
-      background-size: 200% auto;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      animation: shimmerText 2s linear infinite;
+    @keyframes rotateCounter {
+      from {
+        transform: rotate(360deg);
+      }
+
+      to {
+        transform: rotate(0deg);
+      }
     }
 
-    @keyframes shimmerText {
+    /* Cardinal Compass Points */
+    .cardinal-point {
+      position: absolute;
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      color: #38bdf8;
+      text-shadow: 0 0 8px rgba(56, 189, 248, 0.7);
+    }
+
+    .cardinal-n {
+      top: -4px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #2dd4bf;
+    }
+
+    .cardinal-s {
+      bottom: -4px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .cardinal-e {
+      right: -2px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .cardinal-w {
+      left: -2px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    /* 3D Tilted Elliptical Orbit (Golden Ratio Motion) */
+    .ellipse-orbit {
+      position: absolute;
+      width: 116%;
+      height: 116%;
+      border-radius: 50%;
+      border: 1.5px solid transparent;
+      border-top: 1.5px solid rgba(45, 212, 191, 0.85);
+      transform: rotateX(68deg) rotateY(15deg);
+      animation: spinEllipse 4.5s linear infinite;
+    }
+
+    .satellite-pearl {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #ffffff;
+      box-shadow: 0 0 12px #2dd4bf, 0 0 24px #06b6d4, 0 0 35px #ffffff;
+      transform: translate(-50%, -50%);
+    }
+
+    @keyframes spinEllipse {
       0% {
-        background-position: 0% center;
+        transform: rotateX(68deg) rotateY(15deg) rotateZ(0deg);
       }
 
       100% {
-        background-position: 200% center;
+        transform: rotateX(68deg) rotateY(15deg) rotateZ(360deg);
       }
+    }
+
+    /* ─── Inner Island Horizon Sphere ─────────────────────────────────────── */
+    .horizon-sphere {
+      position: relative;
+      width: clamp(125px, 32vw, 146px);
+      height: clamp(125px, 32vw, 146px);
+      border-radius: 50%;
+      overflow: hidden;
+      background: radial-gradient(circle at 50% 25%, #0f3d59 0%, #061e2e 65%, #020d16 100%);
+      border: 2px solid rgba(45, 212, 191, 0.6);
+      box-shadow: 0 0 30px rgba(6, 182, 212, 0.35), inset 0 0 25px rgba(0, 0, 0, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Tropical Golden Sun */
+    .horizon-sun {
+      position: absolute;
+      top: 25%;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #fef08a 25%, #f59e0b 80%);
+      box-shadow: 0 0 22px #f59e0b, 0 0 45px rgba(254, 240, 138, 0.6);
+      animation: sunGlow 3s ease-in-out infinite alternate;
+      z-index: 2;
+    }
+
+    @keyframes sunGlow {
+      0% {
+        transform: scale(0.92);
+        opacity: 0.9;
+      }
+
+      100% {
+        transform: scale(1.08);
+        opacity: 1;
+      }
+    }
+
+    /* Tropical Island with Swaying Palm Silhouette (Grounded in Sea) */
+    .island-silhouette {
+      position: absolute;
+      bottom: 8px;
+      width: 86px;
+      height: 56px;
+      z-index: 4;
+      filter: drop-shadow(0 2px 6px rgba(6, 182, 212, 0.4));
+    }
+
+    .palm-tree {
+      transform-origin: 43px 44px;
+      animation: palmSway 4s ease-in-out infinite alternate;
+    }
+
+    @keyframes palmSway {
+      0% {
+        transform: rotate(-3deg);
+      }
+
+      100% {
+        transform: rotate(3.5deg);
+      }
+    }
+
+    /* Undulating Multi-Layered Ocean Waves (No Gaps - Lapping Island) */
+    .wave-layer {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 200%;
+      background-repeat: repeat-x;
+    }
+
+    .wave-back {
+      height: 48px;
+      z-index: 3;
+      /* Behind the island */
+      opacity: 0.7;
+      background: radial-gradient(circle at 50% 100%, #0d9488, #0369a1);
+      clip-path: polygon(0% 36%, 15% 22%, 30% 36%, 45% 22%, 60% 36%, 75% 22%, 90% 36%, 100% 22%, 100% 100%, 0% 100%);
+      animation: waveFlowBack 3.2s linear infinite;
+    }
+
+    .wave-front {
+      height: 42px;
+      z-index: 5;
+      /* In front of the island base */
+      opacity: 0.95;
+      background: radial-gradient(circle at 50% 100%, #2dd4bf, #0284c7);
+      clip-path: polygon(0% 44%, 12% 58%, 25% 44%, 38% 58%, 50% 44%, 63% 58%, 75% 44%, 88% 58%, 100% 44%, 100% 100%, 0% 100%);
+      animation: waveFlowFront 2.2s linear infinite;
+    }
+
+    @keyframes waveFlowFront {
+      0% {
+        transform: translateX(0);
+      }
+
+      100% {
+        transform: translateX(-50%);
+      }
+    }
+
+    @keyframes waveFlowBack {
+      0% {
+        transform: translateX(-50%);
+      }
+
+      100% {
+        transform: translateX(0);
+      }
+    }
+
+    /* ─── Brand Heading (Matching Homepage Navbar & Hero) ─────────────────── */
+    .brand-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 5px;
+      margin-bottom: 22px;
+    }
+
+    .brand-title {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: clamp(24px, 6.2vw, 32px);
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      margin: 0;
+      line-height: 1.15;
+    }
+
+    .brand-nicoman {
+      background: linear-gradient(135deg, #14b8a6 0%, #06b6d4 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 25px rgba(20, 184, 166, 0.3);
+    }
+
+    .brand-tourism {
+      color: #ffffff;
+      font-weight: 800;
+      margin-left: 6px;
+    }
+
+    .brand-subheading {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: clamp(10px, 2.5vw, 11px);
+      font-weight: 600;
+      letter-spacing: 2.8px;
+      color: #99f6e4;
+      text-transform: uppercase;
+      opacity: 0.9;
+    }
+
+    /* ─── Progress & Interactive Real Fact Box ────────────────────────────── */
+    .progress-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: clamp(230px, 72vw, 320px);
+      gap: 10px;
+    }
+
+    .progress-metrics {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      align-items: center;
+      padding: 0 2px;
+    }
+
+    .phase-label {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      color: rgba(94, 234, 212, 0.95);
+      text-transform: uppercase;
+    }
+
+    .percent-counter {
+      font-family: 'Inter', monospace, sans-serif;
+      font-size: 12px;
+      font-weight: 800;
+      color: #38bdf8;
+      text-shadow: 0 0 10px rgba(56, 189, 248, 0.6);
+    }
+
+    /* Tropical Neon Progress Bar */
+    .progress-track {
+      position: relative;
+      width: 100%;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 9999px;
+      overflow: hidden;
+      box-shadow: 0 0 12px rgba(20, 184, 166, 0.2);
+    }
+
+    .progress-fill {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: 18%;
+      border-radius: 9999px;
+      background: linear-gradient(90deg, #14b8a6, #06b6d4, #38bdf8);
+      box-shadow: 0 0 12px #2dd4bf;
+      transition: width 0.25s ease-out;
+    }
+
+    /* ─── Real Interesting Andaman Facts Card ────────────────────────────── */
+    .fact-card {
+      width: 100%;
+      min-height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(15, 23, 42, 0.65);
+      border: 1px solid rgba(45, 212, 191, 0.25);
+      border-radius: 12px;
+      padding: 10px 14px;
+      margin-top: 6px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .fact-text {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: clamp(10.5px, 2.6vw, 11.5px);
+      font-weight: 500;
+      line-height: 1.45;
+      color: #e2e8f0;
+      margin: 0;
+      text-align: center;
+      transition: opacity 0.32s ease, transform 0.32s ease;
     }
 
     /* Prevent FOUC */
@@ -136,10 +468,77 @@
 </head>
 
 <body>
-  <!-- Loading Screen -->
-  <div id="loading-screen">
-    <div class="loader"></div>
-    <p class="loader-text">NICOMAN TOURISM</p>
+  <!-- Tropical Island Kinetic Compass Intro -->
+  <div id="loading-screen" role="progressbar" aria-label="Loading Nicoman Tourism">
+    <div class="tropical-glow"></div>
+
+    <!-- Centerpiece Gyroscopic Island Compass -->
+    <div class="compass-wrap">
+      <div class="outer-celestial-ring"></div>
+      <div class="secondary-orbit-ring"></div>
+
+      <!-- Cardinal Compass Markers -->
+      <span class="cardinal-point cardinal-n">N</span>
+      <span class="cardinal-point cardinal-s">S</span>
+      <span class="cardinal-point cardinal-e">E</span>
+      <span class="cardinal-point cardinal-w">W</span>
+
+      <!-- 3D Tilted Elliptical Golden-Ratio Orbit -->
+      <div class="ellipse-orbit">
+        <div class="satellite-pearl"></div>
+      </div>
+
+      <!-- Inner Island Horizon Sphere -->
+      <div class="horizon-sphere">
+        <div class="horizon-sun"></div>
+
+        <!-- Tropical Island with Swaying Palm (Grounded in Sea) -->
+        <svg class="island-silhouette" viewBox="0 0 84 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Island Landform Base submerged into sea -->
+          <path d="M4 36C18 30 34 28 50 30C64 32 74 35 80 36C70 44 24 46 4 36Z" fill="#14b8a6" />
+          <path d="M4 36C24 46 70 44 80 36L80 52L4 52Z" fill="#0d9488" />
+          <!-- Swaying Palm Group rooted in island -->
+          <g class="palm-tree">
+            <!-- Trunk -->
+            <path d="M42 38C42 30 44 22 48 16" stroke="#042f2e" stroke-width="2.6" stroke-linecap="round" />
+            <!-- Fronds -->
+            <path d="M48 16C51 12 58 12 61 15C56 17 51 18 48 16Z" fill="#2dd4bf" />
+            <path d="M48 16C50 10 54 6 58 5C54 10 51 13 48 16Z" fill="#38bdf8" />
+            <path d="M48 16C45 10 40 8 36 8C40 12 44 14 48 16Z" fill="#2dd4bf" />
+            <path d="M48 16C43 14 38 16 35 20C40 20 45 18 48 16Z" fill="#14b8a6" />
+          </g>
+        </svg>
+
+        <!-- Dynamic Multi-Layer Sine Waves -->
+        <div class="wave-layer wave-back"></div>
+        <div class="wave-layer wave-front"></div>
+      </div>
+    </div>
+
+    <!-- Brand Typography (100% Matches Homepage Navbar & Theme) -->
+    <div class="brand-group">
+      <h1 class="brand-title">
+        <span class="brand-nicoman">Nicoman</span><span class="brand-tourism">Tourism</span>
+      </h1>
+      <div class="brand-subheading">Your Gateway to Paradise Islands</div>
+    </div>
+
+    <!-- Progress Tracker & Real Island Facts -->
+    <div class="progress-box">
+      <div class="progress-metrics">
+        <span class="phase-label">Preparing Your Journey</span>
+        <span class="percent-counter" id="loader-percent">18%</span>
+      </div>
+
+      <div class="progress-track">
+        <div class="progress-fill" id="loader-bar" style="width: 18%;"></div>
+      </div>
+
+      <!-- Real Andaman Island Facts (Rotates smoothly every 1.5s) -->
+      <div class="fact-card">
+        <p class="fact-text" id="loader-fact">Radhanagar Beach was voted Asia’s #1 Best Beach by Time Magazine 🌴</p>
+      </div>
+    </div>
   </div>
 
   <!-- App Root -->
@@ -148,12 +547,73 @@
   <script type="module" src="/src/main.jsx"></script>
 
   <script>
-    // Hide loading screen when app is ready
-    window.addEventListener('load', () => {
-      setTimeout(() => {
-        document.getElementById('loading-screen').classList.add('hidden');
-      }, 1000);
-    });
+    // ─── Mathematical Loader & Real Island Facts Controller ───────────────
+    (function () {
+      const loader = document.getElementById('loading-screen');
+      const percentEl = document.getElementById('loader-percent');
+      const barEl = document.getElementById('loader-bar');
+      const factEl = document.getElementById('loader-fact');
+
+      // 100% Real, fascinating Andaman & Nicobar facts
+      const facts = [
+        "Radhanagar Beach on Havelock was voted Asia’s #1 Best Beach by Time Magazine 🌴",
+        "Barren Island in Andaman is home to South Asia’s only active volcano 🌋",
+        "Over 800+ pristine tropical islands form this breathtaking emerald archipelago 🏝️",
+        "Andaman waters are a protected sanctuary for the gentle Dugong (Sea Cow) 🐬",
+        "Havelock’s reefs protect over 500 species of vibrant tropical coral life 🤿",
+        "Cellular Jail in Port Blair stands as India’s historic national freedom memorial 🏛️"
+      ];
+
+      let progress = 18;
+      let factIndex = 0;
+      let appLoaded = false;
+
+      // Cycle real facts every 1.6 seconds smoothly
+      const factTimer = setInterval(() => {
+        if (!factEl) return;
+        factIndex = (factIndex + 1) % facts.length;
+        factEl.style.opacity = '0';
+        factEl.style.transform = 'translateY(4px)';
+        setTimeout(() => {
+          factEl.textContent = facts[factIndex];
+          factEl.style.opacity = '1';
+          factEl.style.transform = 'translateY(0)';
+        }, 220);
+      }, 1600);
+
+      // Smooth asymptotic easing counter up to 92%
+      const counterTimer = setInterval(() => {
+        if (!appLoaded && progress < 92) {
+          const step = Math.max(1, Math.floor((95 - progress) / 7));
+          progress += step;
+          if (percentEl) percentEl.textContent = String(progress).padStart(2, '0') + '%';
+          if (barEl) barEl.style.width = progress + '%';
+        }
+      }, 120);
+
+      // When the browser & React bundle finish loading
+      window.addEventListener('load', () => {
+        appLoaded = true;
+        clearInterval(counterTimer);
+        clearInterval(factTimer);
+
+        if (factEl) factEl.textContent = "Welcome to Andaman & Nicobar Paradise ✨";
+        if (percentEl) percentEl.textContent = "100%";
+        if (barEl) {
+          barEl.style.transition = 'width 0.3s ease';
+          barEl.style.width = '100%';
+        }
+
+        setTimeout(() => {
+          if (loader) {
+            loader.classList.add('hidden');
+            setTimeout(() => {
+              loader.style.display = 'none';
+            }, 800);
+          }
+        }, 350);
+      });
+    })();
   </script>
 </body>
 

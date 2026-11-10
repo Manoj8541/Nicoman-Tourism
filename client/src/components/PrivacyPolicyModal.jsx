@@ -11,7 +11,7 @@ const SECTIONS = [
   },
   {
     title: '2. 🔐 Account Creation & Safe Sign-In Options',
-    body: `You can browse the platform freely. If you choose to create an account, we recommend:\n• ⚡ Signing in safely via Google OAuth (one-click, secure authentication)\n• 🛡️ Or using a disposable / temporary email address if you prefer maximum anonymity\n\nWhen signing up with email/password, we only store your provided name and email address. We never sell, monetize, or share your data with any third-party marketing services or travel operators.`,
+    body: `You can browse the platform freely. If you choose to create an account, we recommend:\n• ⚡ Signing in safely via Google OAuth (one-click, secure authentication)\n• 🛡️ Or using either disposable / temporary email address or provided demo admin account below if you prefer maximum anonymity\n\nWhen signing up with email/password, we only store your provided name and email address. We never sell, monetize, or share your data with any third-party marketing services or travel operators.\n\n⚠️ Disclaimer: This is a public demonstration sandbox. If you sign up using your personal email or phone number and leave it active without deleting it, the developers are NOT responsible if other visitors or third parties access or misuse your information. We strongly advise to delete your account immediately after testing via top right profile button of\n • My Profile > Danger zone and\n • Admin Dashboard > Deleted Accounts > Purge all Traces (in demo admin account)\nif you used personal information for account creation.`,
   },
   {
     title: '3. 🗄️ Data Storage & Zero Analytics',

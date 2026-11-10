@@ -13,6 +13,8 @@
 
 [![Deployment](https://img.shields.io/badge/Deployed-Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://nicoman-tourism.vercel.app)
 [![Live Site](https://img.shields.io/badge/Live_Site-Visit_Portal-0CBABA?style=for-the-badge&logo=google-chrome&logoColor=white)](https://nicoman-tourism.vercel.app)
+[![Vitest](https://img.shields.io/badge/Vitest-32_Tests_Passing-3ECF8E?style=for-the-badge&logo=vitest&logoColor=white)](./SECURITY_AND_TESTING.md)
+[![Security](https://img.shields.io/badge/Security-Admin_Shield_NIST-008080?style=for-the-badge&logo=auth0&logoColor=white)](./SECURITY_AND_TESTING.md)
 [![React](https://img.shields.io/badge/React_18-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://react.dev/)
 [![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)](https://supabase.com/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
@@ -60,7 +62,7 @@ Reviewers and visitors can explore the complete management command center withou
 ### Discover
 * **Curated Destination Guides:** Detailed attraction overviews with seasonal insights and interactive coordinates across Andaman.
 * **Instant Faceted Search:** High-speed client-side filtering across accommodations and transport hubs without page reloads.
-* **On-Device AI Assistant:** Intelligent travel companion grounded in live database catalogs, running inference entirely in the browser.
+* **On-Device AI Assistant & RAG Engine:** Intelligent conversational travel assistant grounded in live database catalogs, featuring stopword-free entity matching, budget-aware hotel sorting, step-by-step convoy transit guides, multi-turn context memory and interactive SPA navigation links.
 
 ### Plan
 * **Live Ferry Schedules:** Inter-island vessel timetables, tariffs, and route maps with automated status tracking.
@@ -72,6 +74,12 @@ Reviewers and visitors can explore the complete management command center withou
 * **Two-Way Support Invoicing:** Unified customer inquiry inbox with automated outbound replies and inbound webhook thread matching.
 * **30-Day Recovery Vault:** Self-service account deletion with automated grace-period archival and one-click restoration.
 
+### Secure & Verify
+* **Admin Shield Console Defense:** NIST SP 800-63B / PCI-DSS compliance, 10-minute inactivity auto-lock, `localStorage` F5 refresh immunity, and cross-tab synchronization via `BroadcastChannel` in `<1 ms`.
+* **Double-Booking Collision Engine:** Transactional collision detection (`HTTP 409 Conflict`) with interactive room/seat re-allocation modal for race conditions.
+* **In-Memory Rate Limiting:** Sliding-window anti-DDoS IP rate limiting with automated bypass for 4-day database keep-alive cron jobs.
+* **Automated Vitest Suite:** 32 headless unit & integration test cases across 7 files verifying conflict detection, role guards, ChatBot RAG engine, entity matching, and offline AI fallbacks in ~17 seconds.
+
 ---
 
 ## Technology Stack
@@ -79,9 +87,12 @@ Reviewers and visitors can explore the complete management command center withou
 | Domain | Technology | Integration / Identity Badge |
 | :--- | :--- | :--- |
 | **Frontend Framework** | React 18 & Vite | ![React](https://img.shields.io/badge/React-20232A?style=flat-square&logo=react&logoColor=61DAFB) |
+| **Type Contracts** | TypeScript & JSDoc | ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white) |
 | **Styling & Motion** | Tailwind CSS & Framer Motion | ![Tailwind](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white) |
 | **Database & Auth** | Supabase PostgreSQL & RLS | ![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=flat-square&logo=supabase&logoColor=white) |
 | **Serverless API** | Node.js & Express Router | ![Node.js](https://img.shields.io/badge/Node.js-339933?style=flat-square&logo=node.js&logoColor=white) |
+| **Automated Testing** | Vitest 2.1.9 & Testing Library | ![Vitest](https://img.shields.io/badge/Vitest-6E9F18?style=flat-square&logo=vitest&logoColor=white) |
+| **Terminal Protection** | Admin Shield & BroadcastChannel | ![Security](https://img.shields.io/badge/Admin_Shield-NIST_SP_800--63B-008080?style=flat-square) |
 | **Bot Security** | Cloudflare Turnstile | ![Cloudflare](https://img.shields.io/badge/Cloudflare_Turnstile-F38020?style=flat-square&logo=cloudflare&logoColor=white) |
 | **Email Platform** | Resend & Svix Webhooks | ![Resend](https://img.shields.io/badge/Resend-000000?style=flat-square&logo=resend&logoColor=white) |
 | **Geospatial Maps** | Leaflet & OpenStreetMap | ![OpenStreetMap](https://img.shields.io/badge/OpenStreetMap-7EBC6F?style=flat-square&logo=openstreetmap&logoColor=white) |
@@ -146,6 +157,10 @@ For in-depth architectural details, database schema explanations, PostgreSQL Row
 
 📖 **[Read the Complete Technical Architecture Document: PROJECT_IMPLEMENTATION.md](./PROJECT_IMPLEMENTATION.md)**
 
+For security threat modeling, concurrency collision exception handling, edge CDN rules, and automated testing execution reports:
+
+🛡️ **[Read the Security Hardening, Concurrency & Testing Report: SECURITY_AND_TESTING.md](./SECURITY_AND_TESTING.md)**
+
 ---
 
 ## Getting Started
@@ -172,6 +187,15 @@ cd ..
 
 # 4. Launch local development servers
 npm run dev
+
+# 5. Run full automated test suite (32 tests across 7 files)
+npm test
+
+# 6. Verify TypeScript type contracts
+npm run type-check
+
+# 7. Build unified production bundles with self-healing sub-app merge
+npm run build
 ```
 
 ---
@@ -184,6 +208,7 @@ npm run dev
 > * **Educational & Demonstration Purpose:** This software application is developed exclusively for **non-commercial educational, engineering demonstration, and portfolio purposes**. No commercial transactions, booking monetization, or financial processing are conducted through this portal.
 > * **Media, Photography & Trademarks:** All destination imagery, hotel photography, ferry vessel names, brand trademarks, and logos displayed within this repository and live demonstration are the property of their respective copyright and intellectual property owners. Visual assets are utilized under the **Fair Use** doctrine (Section 107 of the US Copyright Act and Section 52 of the Indian Copyright Act, 1957) for technological showcase and educational review.
 > * **No Official Affiliation:** This project is an independent engineering development and is not officially affiliated with, authorized by, sponsored by, or endorsed by the Directorate of Tourism (Andaman and Nicobar Administration) or any private hotel/ferry operators mentioned herein.
+> * **Demonstration Account Privacy & User Data Disclaimer:** While the platform features automated account deletion and privacy vaults, visitors are reminded that this live deployment operates as a publicly accessible demonstration environment. If a visitor voluntarily creates an account using personal email addresses or phone numbers and leaves the account active without deleting it, the developer assumes **no responsibility or liability** for any unauthorized harvesting, exposure, or third-party misuse of that data. Visitors and reviewers are **strongly urged to explore the platform using the provided Demo Admin credentials (`demoadmin@nicoman.com`) or disposable test email addresses**.
 > * **DMCA / Content Takedown Safe Harbor:** If you are the copyright owner of any image, media asset, or trademark referenced in this project and wish to have it credited, modified, or permanently removed, please submit a request via [GitHub Issues](https://github.com/Manoj8541/Nicoman-Tourism/issues). Any verified request will be addressed promptly in good faith.
 > * **Limitation of Liability & "As-Is" Warranty:** The software and schedules provided herein are for demonstration simulation only and may not reflect real-time maritime conditions. The author assumes no legal liability for travel decisions or bookings made outside this demonstrative environment.
 

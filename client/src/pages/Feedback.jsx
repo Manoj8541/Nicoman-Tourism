@@ -68,6 +68,34 @@ const Feedback = () => {
 
   useEffect(() => {
     fetchFeedbacks();
+
+    // Level 1: Focus & Visibility Revalidation (catches background/asleep tabs)
+    const handleRevalidate = () => {
+      if (document.visibilityState === 'visible') {
+        fetchFeedbacks();
+      }
+    };
+    window.addEventListener('focus', handleRevalidate);
+    document.addEventListener('visibilitychange', handleRevalidate);
+
+    // Level 2: Cross-tab sync via native BroadcastChannel (0 network calls, instant 1ms sync)
+    let bc = null;
+    if (typeof window !== 'undefined' && 'BroadcastChannel' in window) {
+      bc = new BroadcastChannel('nicoman_events');
+      bc.onmessage = (event) => {
+        if (event.data?.type === 'FEEDBACK_DELETED') {
+          setFeedbacks(prev => prev.filter(f => f.id !== event.data.id));
+        } else if (event.data?.type === 'FEEDBACK_MUTATED') {
+          fetchFeedbacks();
+        }
+      };
+    }
+
+    return () => {
+      window.removeEventListener('focus', handleRevalidate);
+      document.removeEventListener('visibilitychange', handleRevalidate);
+      if (bc) bc.close();
+    };
   }, [fetchFeedbacks]);
 
   // Pre-fill name/email when user logs in
@@ -172,10 +200,23 @@ const Feedback = () => {
       const headers = { Authorization: `Bearer ${session.access_token}` };
       await axios.delete(`/api/feedback?id=${id}`, { headers });
       toast.success('Your feedback has been deleted');
+
+      // Notify other open tabs immediately (0 network calls)
+      if (typeof window !== 'undefined' && 'BroadcastChannel' in window) {
+        const bc = new BroadcastChannel('nicoman_events');
+        bc.postMessage({ type: 'FEEDBACK_DELETED', id });
+        bc.close();
+      }
     } catch (err) {
-      // Revert if failed
-      setFeedbacks(previousList);
-      toast.error(err.response?.data?.error || 'Failed to delete feedback');
+      // Level 3: Graceful Idempotent 404 Handling
+      if (err.response?.status === 404) {
+        // Record was already deleted in another tab/session — KEEP removed from UI!
+        toast.success('Feedback was already removed');
+      } else {
+        // Genuine network/auth error — revert UI
+        setFeedbacks(previousList);
+        toast.error(err.response?.data?.error || 'Failed to delete feedback');
+      }
     } finally {
       setDeletingId(null);
     }

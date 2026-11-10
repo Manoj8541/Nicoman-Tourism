@@ -5,7 +5,10 @@
   "type": "module",
   "scripts": {
     "build": "node build.js",
-    "vercel-build": "node build.js"
+    "vercel-build": "node build.js",
+    "test": "npm --prefix client test",
+    "test:watch": "npm --prefix client run test:watch",
+    "type-check": "npm --prefix client run type-check"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.39.0",

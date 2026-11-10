@@ -1,5 +1,11 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import fs from 'fs';
+
+// Workaround for Node.js 24+ on Windows where fs.realpathSync.native throws EPERM on NTFS volumes
+if (fs.realpathSync.native) {
+  fs.realpathSync.native = fs.realpathSync;
+}
 
 // ─── Dev vs Production API routing ─────────────────────────────────────────
 // LOCAL DEV:   `npm run dev` (client/) + `node server/server.js` (server/).
@@ -45,5 +51,10 @@ export default defineConfig({
         },
       },
     },
+  },
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: './src/tests/setup.js',
   },
 });

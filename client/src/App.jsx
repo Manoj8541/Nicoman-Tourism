@@ -1,6 +1,7 @@
 import React, { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
+import InteractiveToast from './components/InteractiveToast';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ChatBot from './components/ChatBot';
@@ -124,9 +125,11 @@ function AppInner() {
           position="top-right"
           toastOptions={{
             duration: 4000,
-            style: { borderRadius: '12px', fontWeight: '600' },
+            style: { borderRadius: '14px', fontWeight: '600' },
           }}
-        />
+        >
+          {(t) => <InteractiveToast t={t} />}
+        </Toaster>
       </div>
     );
   }
@@ -146,9 +149,11 @@ function AppInner() {
         position="top-right"
         toastOptions={{
           duration: 4000,
-          style: { borderRadius: '12px', fontWeight: '600' },
+          style: { borderRadius: '14px', fontWeight: '600' },
         }}
-      />
+      >
+        {(t) => <InteractiveToast t={t} />}
+      </Toaster>
     </div>
   );
 }
